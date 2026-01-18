@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package allocation;
+
+service AllocationService {
+  rpc ProcessAllocation (AllocationData) returns (AllocationData) {}
+}
+
+message AllocationData {
+  int32 id = 1;
+  double value = 2;
+}
