@@ -1,4 +1,9 @@
-# NestJS TPA Backend
+# TPA Backend
+<a href="https://scan.coverity.com/projects/hunterzax-tp-backend-tmp">
+  <img alt="Coverity Scan Build Status"
+       src="https://scan.coverity.com/projects/32846/badge.svg"/>
+</a>
+
 
 This is a scaffolded NestJS application for an TP-Backend system, including modules for Allocation, Capacity, Planning, and more.
 
