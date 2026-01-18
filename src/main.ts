@@ -12,8 +12,12 @@ async function bootstrap() {
     app.setGlobalPrefix('api/v1');
     app.useGlobalPipes(new ValidationPipe({ transform: true }));
 
-    // Enable CORS
-    app.enableCors();
+    // Enable CORS with secure configuration
+    app.enableCors({
+        origin: (process.env.ALLOWED_ORIGINS || 'http://localhost:3000').split(','),
+        credentials: true,
+        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    });
 
     // Hybrid Application (HTTP + gRPC)
     app.connectMicroservice<MicroserviceOptions>({
