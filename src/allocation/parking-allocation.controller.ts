@@ -1,5 +1,7 @@
-import { Controller, Get, Post, Body, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { ParkingAllocationService } from './parking-allocation.service';
+import { CreateParkingAllocationDto } from './dto/create-parking-allocation.dto';
+import { UpdateParkingAllocationDto } from './dto/update-parking-allocation.dto';
 import { AuthGuard } from '../common/guards/auth.guard';
 
 @Controller('parking-allocation')
@@ -7,13 +9,28 @@ import { AuthGuard } from '../common/guards/auth.guard';
 export class ParkingAllocationController {
   constructor(private readonly service: ParkingAllocationService) {}
 
+  @Post()
+  create(@Body() createDto: CreateParkingAllocationDto) {
+    return this.service.create(createDto);
+  }
+
   @Get()
   findAll() {
     return this.service.findAll();
   }
 
-  @Post()
-  create(@Body() body: any) {
-    return this.service.create(body);
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.service.findOne(+id);
+  }
+
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() updateDto: UpdateParkingAllocationDto) {
+    return this.service.update(+id, updateDto);
+  }
+
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.service.remove(+id);
   }
 }

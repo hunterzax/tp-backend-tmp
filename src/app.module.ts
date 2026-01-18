@@ -16,6 +16,7 @@ import { SystemModule } from './system/system.module';
 import { FilesModule } from './files/files.module';
 import { QualityModule } from './quality/quality.module';
 import { MiscModule } from './misc/misc.module';
+import { StressTestModule } from './stress-test/stress-test.module';
 
 @Module({
     imports: [
@@ -32,6 +33,7 @@ import { MiscModule } from './misc/misc.module';
         FilesModule,
         QualityModule,
         MiscModule,
+        StressTestModule,
     ],
     controllers: [],
     providers: [

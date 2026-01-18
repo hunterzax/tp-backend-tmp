@@ -1,25 +1,36 @@
-import { Controller, Get, Post, Body, Put, Param, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { ParameterService } from './parameter.service';
+import { CreateParameterDto } from './dto/create-parameter.dto';
+import { UpdateParameterDto } from './dto/update-parameter.dto';
 import { AuthGuard } from '../common/guards/auth.guard';
 
-@Controller('parameters')
+@Controller('parameter')
 @UseGuards(AuthGuard)
 export class ParameterController {
-    constructor(private readonly parameterService: ParameterService) { }
+  constructor(private readonly service: ParameterService) {}
 
-    @Get()
-    async getAllParameters() {
-        return this.parameterService.findAll();
-    }
+  @Post()
+  create(@Body() createDto: CreateParameterDto) {
+    return this.service.create(createDto);
+  }
 
-    @Get('deadlines')
-    async getDeadlines() {
-        // Specific logic for fetching Nomination and Planning deadlines
-        return this.parameterService.getSystemDeadlines();
-    }
+  @Get()
+  findAll() {
+    return this.service.findAll();
+  }
 
-    @Put(':key')
-    async updateParameter(@Param('key') key: string, @Body('value') value: string) {
-        return this.parameterService.update(key, value);
-    }
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.service.findOne(+id);
+  }
+
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() updateDto: UpdateParameterDto) {
+    return this.service.update(+id, updateDto);
+  }
+
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.service.remove(+id);
+  }
 }

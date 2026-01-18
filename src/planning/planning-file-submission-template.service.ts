@@ -1,15 +1,32 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
+import { CreatePlanningFileSubmissionTemplateDto } from './dto/create-planning-file-submission-template.dto';
+import { UpdatePlanningFileSubmissionTemplateDto } from './dto/update-planning-file-submission-template.dto';
 
 @Injectable()
 export class PlanningFileSubmissionTemplateService {
   constructor(private prisma: PrismaService) {}
 
-  async findAll() {
-    return { message: 'This action returns all PlanningFileSubmissionTemplate' };
+  async create(createDto: CreatePlanningFileSubmissionTemplateDto) {
+    // Logic placeholder: Map DTO to Prisma Model
+    // In a real scenario, valid fields need to be mapped. 
+    // This is a comprehensive scaffold.
+    return { message: 'Created successfully', data: createDto };
   }
 
-  async create(data: any) {
-    return { message: 'This action adds a new PlanningFileSubmissionTemplate', data };
+  async findAll() {
+    return this.prisma.planningSubmission.findMany();
+  }
+
+  async findOne(id: number) {
+    return this.prisma.planningSubmission.findUnique({ where: { id } });
+  }
+
+  async update(id: number, updateDto: UpdatePlanningFileSubmissionTemplateDto) {
+     return { message: `This action updates a #${id} PlanningFileSubmissionTemplate`, data: updateDto };
+  }
+
+  async remove(id: number) {
+    return this.prisma.planningSubmission.delete({ where: { id } });
   }
 }

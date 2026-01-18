@@ -1,5 +1,7 @@
-import { Controller, Get, Post, Body, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { AllocationModeService } from './allocation-mode.service';
+import { CreateAllocationModeDto } from './dto/create-allocation-mode.dto';
+import { UpdateAllocationModeDto } from './dto/update-allocation-mode.dto';
 import { AuthGuard } from '../common/guards/auth.guard';
 
 @Controller('allocation-mode')
@@ -7,13 +9,28 @@ import { AuthGuard } from '../common/guards/auth.guard';
 export class AllocationModeController {
   constructor(private readonly service: AllocationModeService) {}
 
+  @Post()
+  create(@Body() createDto: CreateAllocationModeDto) {
+    return this.service.create(createDto);
+  }
+
   @Get()
   findAll() {
     return this.service.findAll();
   }
 
-  @Post()
-  create(@Body() body: any) {
-    return this.service.create(body);
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.service.findOne(+id);
+  }
+
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() updateDto: UpdateAllocationModeDto) {
+    return this.service.update(+id, updateDto);
+  }
+
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.service.remove(+id);
   }
 }

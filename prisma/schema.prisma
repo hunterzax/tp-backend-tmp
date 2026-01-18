@@ -10,6 +10,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// Core Identity
 model User {
   id        Int      @id @default(autoincrement())
   email     String   @unique
@@ -19,6 +20,9 @@ model User {
   role      Role?    @relation(fields: [roleId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  
+  // Relations
+  nominations Nomination[]
 }
 
 model Role {
@@ -27,34 +31,129 @@ model Role {
   users User[]
 }
 
-model Capacity {
-  id          Int      @id @default(autoincrement())
-  name        String
-  value       Float
-  date        DateTime
-  createdById Int
-  updatedAt   DateTime @updatedAt
-}
-
-model Nomination {
-  id        Int      @id @default(autoincrement())
-  shipperId Int
-  volume    Float
-  date      DateTime
-  status    String
-}
-
-model Allocation {
-  id           Int      @id @default(autoincrement())
-  nominationId Int
-  allocatedQty Float
-  allocationDate DateTime
-  status       String
-}
-
+// System Config
 model SystemParameter {
   id          Int    @id @default(autoincrement())
   key         String @unique
   value       String
   description String?
+}
+
+// --- Capacity Module ---
+model Capacity {
+  id          Int      @id @default(autoincrement())
+  name        String
+  value       Float
+  date        DateTime
+  type        String   @default("NORMAL") // NORMAL, RELEASE, UIOLI
+  createdById Int
+  updatedAt   DateTime @updatedAt
+}
+
+model CapacityPublication {
+  id        Int      @id @default(autoincrement())
+  title     String
+  content   String
+  publishDate DateTime @default(now())
+}
+
+// --- Planning & Nomination Module ---
+model Nomination {
+  id        Int      @id @default(autoincrement())
+  shipperId Int
+  shipper   User     @relation(fields: [shipperId], references: [id])
+  volume    Float
+  date      DateTime
+  status    String   @default("PENDING") // PENDING, APPROVED, REJECTED
+  type      String   @default("DAILY")
+  createdAt DateTime @default(now())
+  allocations Allocation[]
+}
+
+model PlanningSubmission {
+  id        Int      @id @default(autoincrement())
+  title     String
+  filePath  String
+  cycle     String   // MONTHLY, YEARLY
+  status    String
+  createdAt DateTime @default(now())
+}
+
+// --- Allocation Module ---
+model Allocation {
+  id           Int      @id @default(autoincrement())
+  nominationId Int
+  nomination   Nomination @relation(fields: [nominationId], references: [id])
+  allocatedQty Float
+  allocationDate DateTime
+  status       String
+  mode         String   @default("AUTO")
+}
+
+model ParkingAllocation {
+  id        Int      @id @default(autoincrement())
+  shipperId Int
+  date      DateTime
+  balance   Float
+}
+
+// --- Operations Module ---
+model DailyAdjustment {
+  id        Int      @id @default(autoincrement())
+  date      DateTime
+  location  String
+  adjValue  Float
+  reason    String
+}
+
+model FlowRecord {
+  id        Int      @id @default(autoincrement())
+  point     String
+  flowRate  Float
+  timestamp DateTime
+  type      String // INSTRUCTED, ACTUAL
+}
+
+// --- Asset Module ---
+model AssetItem {
+  id          Int      @id @default(autoincrement())
+  code        String   @unique
+  name        String
+  status      String   // ACTIVE, MAINTENANCE
+  location    String
+  installDate DateTime
+}
+
+model MeterReading {
+  id        Int      @id @default(autoincrement())
+  meterId   Int
+  value     Float
+  unit      String
+  readTime  DateTime
+}
+
+// --- Quality & Tariff ---
+model QualityLog {
+  id        Int      @id @default(autoincrement())
+  batchId   String
+  parameter String   // GCV, WI, etc
+  value     Float
+  checkDate DateTime
+}
+
+model Tariff {
+  id        Int      @id @default(autoincrement())
+  code      String   @unique
+  rate      Float
+  currency  String
+  effectiveDate DateTime
+}
+
+// --- Misc ---
+model BulletinPost {
+  id        Int      @id @default(autoincrement())
+  title     String
+  body      String
+  category  String
+  postedAt  DateTime @default(now())
 }
